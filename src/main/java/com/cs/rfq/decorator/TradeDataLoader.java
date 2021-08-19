@@ -11,6 +11,8 @@ import org.apache.spark.streaming.api.java.JavaDStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Date;
+
 import static org.apache.spark.sql.types.DataTypes.*;
 
 public class TradeDataLoader {
@@ -19,7 +21,19 @@ public class TradeDataLoader {
 
     public Dataset<Row> loadTrades(SparkSession session, String path) {
         //TODO: create an explicit schema for the trade data in the JSON files
-        StructType schema = null;
+        Metadata metaEmpty = new Metadata().empty();
+
+        StructType schema = new StructType(
+                new StructField[]{
+                        new StructField("traderId", LongType, false, metaEmpty),
+                        new StructField("entityId", LongType, false, metaEmpty),
+                        new StructField("securityId", StringType, false, metaEmpty),
+                        new StructField("lastQty", LongType, false, metaEmpty),
+                        new StructField("lastPx", DoubleType, false, metaEmpty),
+                        new StructField("tradeDate", DateType, false, metaEmpty),
+                        new StructField("currency", StringType, false, metaEmpty)
+                }
+        );
 
         //TODO: load the trades dataset
         Dataset<Row> trades = null;
