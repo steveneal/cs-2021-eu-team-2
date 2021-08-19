@@ -3,4 +3,4 @@
 Team Members:
 - Kapilan M
 - Jakub Porebski
-- Magda Fietko
+- Magdalena Fietko
