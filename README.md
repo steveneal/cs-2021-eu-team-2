@@ -4,3 +4,4 @@ Team Members:
 - Kapilan M
 - Jakub Porebski
 - Magdalena Fietko
+- Minh Nguyen Nhat
