@@ -25,18 +25,17 @@ public class TradeDataLoader {
 
         StructType schema = new StructType(
                 new StructField[]{
-                        new StructField("traderId", LongType, false, metaEmpty),
-                        new StructField("entityId", LongType, false, metaEmpty),
-                        new StructField("securityId", StringType, false, metaEmpty),
-                        new StructField("lastQty", LongType, false, metaEmpty),
-                        new StructField("lastPx", DoubleType, false, metaEmpty),
-                        new StructField("tradeDate", DateType, false, metaEmpty),
-                        new StructField("currency", StringType, false, metaEmpty)
+                        new StructField("TraderId", LongType, false, metaEmpty),
+                        new StructField("EntityId", LongType, false, metaEmpty),
+                        new StructField("SecurityId", StringType, false, metaEmpty),
+                        new StructField("LastQty", LongType, false, metaEmpty),
+                        new StructField("LastPx", DoubleType, false, metaEmpty),
+                        new StructField("TradeDate", DateType, false, metaEmpty),
+                        new StructField("Currency", StringType, false, metaEmpty)
                 }
         );
 
         //TODO: load the trades dataset
-        Dataset<Row> trades = null;
 
         //TODO: log a message indicating number of records loaded and the schema used
 
