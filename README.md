@@ -7,3 +7,4 @@ Team Members:
 - Magdalena Fietko
 - Minh Nguyen Nhat
 - Milena Korusiewicz
+- Przemyslaw Lewszyk
