@@ -61,7 +61,6 @@ public class RfqProcessor {
         //create a blank map for the metadata to be collected
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
-        //TODO: get metadata from each of the extractors
         for (RfqMetadataExtractor extractor : extractors){
             metadata.putAll(extractor.extractMetaData(rfq, session, trades));
         }
