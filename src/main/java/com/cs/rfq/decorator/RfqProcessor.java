@@ -15,10 +15,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 import static org.apache.spark.sql.functions.sum;
@@ -49,10 +46,17 @@ public class RfqProcessor {
 
     public void startSocketListener() throws InterruptedException {
         //TODO: stream data from the input socket on localhost:9000
+        JavaDStream<String> streamInput = streamingContext.socketTextStream("localhost", 9000);
 
         //TODO: convert each incoming line to a Rfq object and call processRfq method with it
 
+        streamInput.foreachRDD(rdd -> {
+            rdd.collect().forEach(line -> processRfq(Rfq.fromJson(line)));
+        });
+
         //TODO: start the streaming context
+        streamingContext.start();
+        streamingContext.awaitTermination();
     }
 
     public void processRfq(Rfq rfq) {
