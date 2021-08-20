@@ -27,7 +27,7 @@ public class TradeDataLoader {
                 new StructField[]{
                         new StructField("TraderId", LongType, false, metaEmpty),
                         new StructField("EntityId", LongType, false, metaEmpty),
-                        new StructField("SecurityId", StringType, false, metaEmpty),
+                        new StructField("SecurityID", StringType, false, metaEmpty),
                         new StructField("LastQty", LongType, false, metaEmpty),
                         new StructField("LastPx", DoubleType, false, metaEmpty),
                         new StructField("TradeDate", DateType, false, metaEmpty),
