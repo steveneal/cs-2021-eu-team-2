@@ -66,6 +66,7 @@ public class RfqProcessor {
             metadata.putAll(extractor.extractMetaData(rfq, session, trades));
         }
 
-        //TODO: publish the metadata
+        MetadataJsonLogPublisher metadataJsonLogPublisher = new MetadataJsonLogPublisher();
+        metadataJsonLogPublisher.publishMetadata(metadata);
     }
 }
