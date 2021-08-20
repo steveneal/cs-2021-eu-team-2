@@ -20,7 +20,6 @@ public class TradeDataLoader {
     private final static Logger log = LoggerFactory.getLogger(TradeDataLoader.class);
 
     public Dataset<Row> loadTrades(SparkSession session, String path) {
-        //TODO: create an explicit schema for the trade data in the JSON files
         Metadata metaEmpty = new Metadata().empty();
 
         StructType schema = new StructType(
@@ -35,11 +34,9 @@ public class TradeDataLoader {
                 }
         );
 
-        //TODO: load the trades dataset
 
         Dataset<Row> trades = session.read().schema(schema).json(path);
 
-        //TODO: log a message indicating number of records loaded and the schema used
         log.info("Number of trades loaded: " + trades.count());
         log.info(trades.schema().treeString());
 
