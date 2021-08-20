@@ -37,6 +37,8 @@ public class TradeDataLoader {
 
         //TODO: load the trades dataset
 
+        Dataset<Row> trades = session.read().schema(schema).json(path);
+
         //TODO: log a message indicating number of records loaded and the schema used
 
         return trades;
