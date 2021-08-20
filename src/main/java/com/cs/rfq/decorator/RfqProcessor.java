@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 import static org.apache.spark.sql.functions.sum;
 
 public class RfqProcessor {
@@ -36,15 +37,12 @@ public class RfqProcessor {
 
     private final MetadataPublisher publisher = new MetadataJsonLogPublisher();
 
-    public RfqProcessor(SparkSession session, JavaStreamingContext streamingContext) {
+    public RfqProcessor(SparkSession session, JavaStreamingContext streamingContext, String filePath) {
         this.session = session;
         this.streamingContext = streamingContext;
 
-        String filePath = getClass().getResource("trades.json").getPath();
-
         trades = new TradeDataLoader().loadTrades(session, filePath);
 
-        //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
         extractors.add(new VolumeTradedWithEntityYTDExtractor());
     }
@@ -64,7 +62,11 @@ public class RfqProcessor {
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
         //TODO: get metadata from each of the extractors
+        for (RfqMetadataExtractor extractor : extractors){
+            metadata.putAll(extractor.extractMetaData(rfq, session, trades));
+        }
 
-        //TODO: publish the metadata
+        MetadataJsonLogPublisher metadataJsonLogPublisher = new MetadataJsonLogPublisher();
+        metadataJsonLogPublisher.publishMetadata(metadata);
     }
 }

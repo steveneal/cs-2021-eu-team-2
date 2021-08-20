@@ -10,6 +10,7 @@ public class RfqDecoratorMain {
     public static void main(String[] args) throws Exception {
         System.setProperty("hadoop.home.dir", "C:\\Java\\hadoop-2.9.2");
         System.setProperty("spark.master", "local[4]");
+        String path = args[0];
 
         SparkConf conf = new SparkConf().setAppName("StreamFromSocket");
 
@@ -20,7 +21,7 @@ public class RfqDecoratorMain {
                 .appName("Dataset with SQL")
                 .getOrCreate();
 
-        RfqProcessor rfqProcessor = new RfqProcessor(session, jssc);
+        RfqProcessor rfqProcessor = new RfqProcessor(session, jssc, path);
         rfqProcessor.startSocketListener();
     }
 }
