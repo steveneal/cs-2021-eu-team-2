@@ -10,7 +10,9 @@ public class RfqDecoratorMain {
     public static void main(String[] args) throws Exception {
         System.setProperty("hadoop.home.dir", "C:\\Java\\hadoop-2.9.2");
         System.setProperty("spark.master", "local[4]");
-        String path = args[0];
+        //String path = args[0];
+        String path = "src/test/resources/trades/trades.json";
+
 
         SparkConf conf = new SparkConf().setAppName("StreamFromSocket");
 
