@@ -35,7 +35,7 @@ class RfqProcessorTest {
                 .appName("Dataset with SQL")
                 .getOrCreate();
 
-        String filePath = getClass().getResource("trades.json").getPath();
+        String filePath = getClass().getResource("/trades/trades.json").getPath();
 
 
         rfqProcessor = new RfqProcessor(session, streamingContext, filePath);
