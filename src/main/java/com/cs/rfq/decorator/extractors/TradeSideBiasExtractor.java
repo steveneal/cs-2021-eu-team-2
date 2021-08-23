@@ -18,22 +18,31 @@ public class TradeSideBiasExtractor {
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-        String query = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side='%s' AND TradeDate >= '%s'",
+        String query_buy = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side=1 AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 rfq.getEntityId(),
-                rfq.getSide(),
+                since);
+
+        String query_sell = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side=2 AND TradeDate >= '%s'",
+                rfq.getIsin(),
+                rfq.getEntityId(),
                 since);
 
         trades.createOrReplaceTempView("trade");
-        Dataset<Row> sqlQueryResults = session.sql(query);
+        Dataset<Row> sqlQueryResults_buy = session.sql(query_buy);
+        Dataset<Row> sqlQueryResults_sell = session.sql(query_sell);
 
-        Object volume = sqlQueryResults.first().get(0);
-        if (volume == null) {
-            volume = 0L;
+        Object volume_buy = sqlQueryResults_buy.first().get(0);
+        if (volume_buy == null) {
+            volume_buy = 0L;
+        }
+        Object volume_sell = sqlQueryResults_sell.first().get(0);
+        if (volume_sell == null) {
+            volume_sell = 0L;
         }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(RfqMetadataFieldNames.instrumentAvgTradePrice, volume);
+        results.put(RfqMetadataFieldNames.instrumentTradeSideBias, volume_buy/volume_sell);
         return results;
     }
 
