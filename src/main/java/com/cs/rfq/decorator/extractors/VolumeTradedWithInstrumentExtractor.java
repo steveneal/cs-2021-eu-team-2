@@ -11,27 +11,30 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
-public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
+public class VolumeTradedWithInstrumentExtractor implements RfqMetadataExtractor {
+
+    public String since;
+
+    public VolumeTradedWithInstrumentExtractor() {
+        this.since = DateTime.now().minusMonths(1).toString();
+    }
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
+        String query = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND TradeDate >= '%s'",
+                rfq.getIsin(),
+                since);
 
-        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+        trades.createOrReplaceTempView("trade");
+        Dataset<Row> sqlQueryResults = session.sql(query);
 
-        Dataset<Row> filtered = trades
-                .filter(trades.col("SecurityID").equalTo(rfq.getIsin())) 
-                .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
-
-        long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();
-        long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
-        long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
+        Object volume = sqlQueryResults.first().get(0);
+        if (volume == null) {
+            volume = 0L;
+        }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(tradesWithEntityToday, tradesToday);
-        results.put(tradesWithEntityPastWeek, tradesPastWeek);
-        results.put(tradesWithEntityPastYear, tradesPastYear);
+        results.put(RfqMetadataFieldNames.instrumentTradeLiquidity, volume);
         return results;
     }
 
