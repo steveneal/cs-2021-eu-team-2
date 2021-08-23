@@ -30,7 +30,8 @@ public class TradeDataLoader {
                         new StructField("LastQty", LongType, false, metaEmpty),
                         new StructField("LastPx", DoubleType, false, metaEmpty),
                         new StructField("TradeDate", DateType, false, metaEmpty),
-                        new StructField("Currency", StringType, false, metaEmpty)
+                        new StructField("Currency", StringType, false, metaEmpty),
+                        new StructField("Side", IntegerType, false, metaEmpty)
                 }
         );
 

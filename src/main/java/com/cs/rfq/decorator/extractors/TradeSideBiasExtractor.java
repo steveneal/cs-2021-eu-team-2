@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TradeSideBiasExtractor {
+public class TradeSideBiasExtractor implements RfqMetadataExtractor{
     public String since;
 
     public TradeSideBiasExtractor() {
@@ -18,14 +18,16 @@ public class TradeSideBiasExtractor {
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-        String query_buy = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side=1 AND TradeDate >= '%s'",
+        String query_buy = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 rfq.getEntityId(),
+                1,
                 since);
 
-        String query_sell = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side=2 AND TradeDate >= '%s'",
+        String query_sell = String.format("SELECT sum(LastQty) from trade where SecurityID='%s' AND EntityID='%s' AND Side='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 rfq.getEntityId(),
+                1,
                 since);
 
         trades.createOrReplaceTempView("trade");
@@ -42,7 +44,7 @@ public class TradeSideBiasExtractor {
         }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(RfqMetadataFieldNames.instrumentTradeSideBias, volume_buy/volume_sell);
+        results.put(RfqMetadataFieldNames.instrumentTradeSideBias, (Long)volume_buy/(Long)volume_sell);
         return results;
     }
 
