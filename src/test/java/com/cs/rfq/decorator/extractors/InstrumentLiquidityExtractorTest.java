@@ -21,33 +21,32 @@ class InstrumentLiquidityExtractorTest extends AbstractSparkUnitTest{
         rfq = new Rfq();
         rfq.setIsin("AT0000A0VRQ6");
 
-        String filePath = getClass().getResource("volume-traded-1.json").getPath();
+        String filePath = getClass().getResource("volume-traded-2.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
     }
 
     @Test
-    public void checkVolumeWhenAllTradesMatch() {
+    public void checkLiquidityWhenPartOfTradesMatch() {
 
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2018-01-01");
+        InstrumentLiquidityExtractor extractor = new InstrumentLiquidityExtractor();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.instrumentTradeLiquidity);
 
-        assertEquals(1_350_000L, result);
+        assertEquals(550_000L, result);
     }
 
     @Test
     public void checkVolumeWhenNoTradesMatch() {
 
         //all test trade data are for 2018 so this will cause no matches
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2019-01-01");
+        rfq.setIsin("NotMatch");
+        InstrumentLiquidityExtractor extractor = new InstrumentLiquidityExtractor();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.instrumentTradeLiquidity);
 
         assertEquals(0L, result);
     }
