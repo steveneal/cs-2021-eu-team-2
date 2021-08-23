@@ -20,7 +20,6 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
     public void setup() {
         rfq = new Rfq();
         rfq.setEntityId(5561279226039690843L);
-        rfq.setIsin("AT0000A0VRQ6");
 
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
@@ -36,7 +35,7 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
         Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
 
-        assertEquals(1_350_000L, result);
+        assertEquals(1_000_000L, result);
     }
 
     @Test
